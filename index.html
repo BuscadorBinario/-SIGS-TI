@@ -141,6 +141,19 @@
                         <canvas id="gaugeSLA"></canvas>
                     </div>
                 </div>
+                <!-- NUEVOS GRÁFICOS -->
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-users"></i> Capacidad del Equipo</h3>
+                    <canvas id="chartCapacidad"></canvas>
+                </div>
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-tachometer-alt"></i> Métricas de Rendimiento</h3>
+                    <canvas id="chartMetricas"></canvas>
+                </div>
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-project-diagram"></i> Estado de Proyectos</h3>
+                    <canvas id="chartProyectos"></canvas>
+                </div>
             </div>
 
             <div class="progress-bar-global">
@@ -198,6 +211,15 @@
 
             <div class="table-container">
                 <h3><i class="fas fa-users"></i> Responsables y Tareas</h3>
+                <div class="search-filter-container">
+                    <input type="text" id="searchResponsable" placeholder="🔍 Buscar por responsable o tarea..." class="search-input">
+                    <select id="filterStatus" class="filter-select">
+                        <option value="all">Todos los estados</option>
+                        <option value="Completado">Completado</option>
+                        <option value="En Proceso">En Proceso</option>
+                        <option value="Pendiente">Pendiente</option>
+                    </select>
+                </div>
                 <table class="data-table">
                     <thead>
                         <tr>
@@ -205,6 +227,8 @@
                             <th>Tarea</th>
                             <th>Estado</th>
                             <th>Progreso</th>
+                            <th>Fecha Inicio</th>
+                            <th>Fecha Fin</th>
                         </tr>
                     </thead>
                     <tbody id="tablaPlanificacion"></tbody>
@@ -253,13 +277,26 @@
 
             <div class="table-container">
                 <h3><i class="fas fa-exclamation-circle"></i> Riesgos del Diseño</h3>
+                <div class="search-filter-container">
+                    <input type="text" id="searchRiesgoDiseno" placeholder="🔍 Buscar riesgo..." class="search-input">
+                    <select id="filterNivel" class="filter-select">
+                        <option value="all">Todos los niveles</option>
+                        <option value="Crítico">Crítico</option>
+                        <option value="Alto">Alto</option>
+                        <option value="Medio">Medio</option>
+                        <option value="Bajo">Bajo</option>
+                    </select>
+                </div>
                 <table class="data-table">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Riesgo</th>
+                            <th>Categoría</th>
                             <th>Impacto</th>
                             <th>Probabilidad</th>
                             <th>Nivel</th>
+                            <th>Mitigación</th>
                         </tr>
                     </thead>
                     <tbody id="tablaRiesgosDiseno"></tbody>
@@ -470,7 +507,27 @@
 
             <div class="risk-matrix-container">
                 <h3><i class="fas fa-th"></i> Matriz de Calor de Riesgos</h3>
-                <canvas id="riskHeatmap"></canvas>
+                <div class="heatmap-legend">
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #27ae60;"></span>
+                        <span>Bajo (1-5)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #f1c40f;"></span>
+                        <span>Medio (6-10)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #e67e22;"></span>
+                        <span>Alto (11-15)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #e74c3c;"></span>
+                        <span>Crítico (16-25)</span>
+                    </div>
+                </div>
+                <div class="canvas-wrapper">
+                    <canvas id="riskHeatmap"></canvas>
+                </div>
             </div>
 
             <div class="stats-grid">
