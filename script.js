@@ -6,6 +6,10 @@ let charts = {};
 let tickets = [];
 let risks = [];
 let planningTasks = [];
+let designServices = [];
+let transitions = [];
+let securityAudits = [];
+let controlAlerts = [];
 
 // ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ===== CONFIGURACIÓN DE EVENTOS =====
 function setupEventListeners() {
-    // Navegación del menú
     document.querySelectorAll('.nav-menu li').forEach(item => {
         item.addEventListener('click', () => {
             const section = item.getAttribute('data-section');
@@ -31,10 +34,8 @@ function setupEventListeners() {
         });
     });
 
-    // Toggle tema
     document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
-    // Filtros de tickets
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -44,7 +45,15 @@ function setupEventListeners() {
         });
     });
 
-    // Formulario de planificación
+    document.querySelectorAll('.filter-btn-risk').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.filter-btn-risk').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const filter = this.getAttribute('data-filter');
+            filterRisks(filter);
+        });
+    });
+
     const formPlan = document.getElementById('formPlanificacion');
     if (formPlan) {
         formPlan.addEventListener('submit', (e) => {
@@ -53,7 +62,6 @@ function setupEventListeners() {
         });
     }
 
-    // Formulario de tickets
     const formTicket = document.getElementById('formTicket');
     if (formTicket) {
         formTicket.addEventListener('submit', (e) => {
@@ -62,7 +70,14 @@ function setupEventListeners() {
         });
     }
 
-    // Búsqueda y filtros
+    const formRiesgo = document.getElementById('formRiesgo');
+    if (formRiesgo) {
+        formRiesgo.addEventListener('submit', (e) => {
+            e.preventDefault();
+            agregarRiesgoManual();
+        });
+    }
+
     const searchResponsable = document.getElementById('searchResponsable');
     if (searchResponsable) {
         searchResponsable.addEventListener('input', filterPlanningTasks);
@@ -136,7 +151,7 @@ function createParticles() {
     
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#3498db';
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#667eea';
         ctx.globalAlpha = 0.5;
         
         particles.forEach(p => {
@@ -164,9 +179,13 @@ function createParticles() {
 
 // ===== GENERACIÓN DE DATOS INICIALES =====
 function generateInitialData() {
-    for (let i = 0; i < 15; i++) generateTicket();
-    for (let i = 0; i < 12; i++) generateRisk();
+    for (let i = 0; i < 20; i++) generateTicket();
+    for (let i = 0; i < 15; i++) generateRisk();
     generatePlanningTasks();
+    generateDesignServices();
+    generateTransitions();
+    generateSecurityAudits();
+    generateControlAlerts();
     
     updateAllDisplays();
     updateAllCharts();
@@ -184,7 +203,11 @@ function generateTicket() {
         'Configuración de firewall',
         'Respaldo de información',
         'Mantenimiento preventivo',
-        'Optimización de rendimiento'
+        'Optimización de rendimiento',
+        'Configuración de VPN',
+        'Instalación de software',
+        'Problema con impresora',
+        'Recuperación de datos'
     ];
     
     const priorities = ['Alta', 'Media', 'Baja'];
@@ -210,19 +233,24 @@ function generateTicket() {
 
 function generateRisk() {
     const descriptions = [
-        'Vulnerabilidad de seguridad detectada',
-        'Riesgo de pérdida de datos',
-        'Fallo potencial en infraestructura',
+        'Vulnerabilidad de seguridad detectada en servidor web',
+        'Riesgo de pérdida de datos por falta de respaldos',
+        'Fallo potencial en infraestructura de red',
         'Incumplimiento de política de acceso',
-        'Sobrecarga del sistema',
+        'Sobrecarga del sistema de base de datos',
         'Dependencia de proveedor único',
         'Falta de respaldos actualizados',
-        'Exposición de información sensible'
+        'Exposición de información sensible',
+        'Obsolescencia de hardware crítico',
+        'Falta de documentación técnica',
+        'Personal insuficiente para operación 24/7',
+        'Vulnerabilidad en aplicación legacy'
     ];
     
     const categories = ['Seguridad', 'Operacional', 'Estratégico', 'Cumplimiento', 'Financiero'];
     const impacts = ['Bajo', 'Medio', 'Alto', 'Crítico'];
     const probabilities = ['Baja', 'Media', 'Alta'];
+    const estados = ['Activo', 'En Mitigación', 'Mitigado', 'Aceptado'];
     
     const impact = impacts[Math.floor(Math.random() * impacts.length)];
     const probability = probabilities[Math.floor(Math.random() * probabilities.length)];
@@ -233,12 +261,13 @@ function generateRisk() {
         category: categories[Math.floor(Math.random() * categories.length)],
         impact: impact,
         probability: probability,
-        level: calculateRiskLevel(impact, probability)
+        level: calculateRiskLevel(impact, probability),
+        status: estados[Math.floor(Math.random() * estados.length)]
     };
     
     risks.push(risk);
     
-    if (risks.length > 30) {
+    if (risks.length > 40) {
         risks.shift();
     }
 }
@@ -250,15 +279,24 @@ function generatePlanningTasks() {
     ];
     
     const tasks = [
-        'Análisis de requisitos', 'Diseño de arquitectura', 'Desarrollo de módulos',
-        'Pruebas de calidad', 'Documentación técnica', 'Capacitación de usuarios',
-        'Migración de datos', 'Configuración de servidores', 'Implementación de seguridad'
+        'Análisis de requisitos del sistema',
+        'Diseño de arquitectura técnica',
+        'Desarrollo de módulos principales',
+        'Pruebas de calidad y validación',
+        'Documentación técnica completa',
+        'Capacitación de usuarios finales',
+        'Migración de datos históricos',
+        'Configuración de servidores producción',
+        'Implementación de controles de seguridad',
+        'Auditoría de cumplimiento normativo',
+        'Optimización de rendimiento',
+        'Integración con sistemas legacy'
     ];
     
     const statuses = ['Completado', 'En Proceso', 'Pendiente'];
     
     planningTasks = [];
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 15; i++) {
         const startDate = new Date(Date.now() - randomBetween(1, 60) * 86400000);
         const endDate = new Date(startDate.getTime() + randomBetween(10, 45) * 86400000);
         
@@ -269,6 +307,116 @@ function generatePlanningTasks() {
             progress: randomBetween(0, 100),
             startDate: startDate.toLocaleDateString('es-ES'),
             endDate: endDate.toLocaleDateString('es-ES')
+        });
+    }
+}
+
+function generateDesignServices() {
+    const services = [
+        'Portal Web Corporativo',
+        'Sistema de Gestión Documental',
+        'Plataforma E-Learning',
+        'CRM Empresarial',
+        'Sistema de Facturación',
+        'Aplicación Móvil Interna',
+        'Data Warehouse',
+        'Sistema de Monitoreo',
+        'Servicio de API Gateway',
+        'Sistema de Backup Automatizado'
+    ];
+    
+    const categories = ['Aplicación', 'Infraestructura', 'Datos', 'Seguridad', 'Integración'];
+    const statuses = ['Aprobado', 'En Revisión', 'Diseño Completado'];
+    
+    designServices = [];
+    for (let i = 0; i < 10; i++) {
+        designServices.push({
+            id: `DS-${200 + i}`,
+            name: services[i],
+            category: categories[randomBetween(0, categories.length - 1)],
+            status: statuses[randomBetween(0, statuses.length - 1)],
+            availability: randomBetween(95, 100) + '%',
+            lastReview: new Date(Date.now() - randomBetween(1, 30) * 86400000).toLocaleDateString('es-ES')
+        });
+    }
+}
+
+function generateTransitions() {
+    const descriptions = [
+        'Actualización de sistema operativo',
+        'Migración a nueva versión de base de datos',
+        'Implementación de nuevo módulo CRM',
+        'Cambio de proveedor de hosting',
+        'Actualización de certificados SSL',
+        'Configuración de nuevo firewall',
+        'Despliegue de parches de seguridad',
+        'Migración de servidores a la nube',
+        'Actualización de framework de desarrollo',
+        'Implementación de sistema de monitoreo'
+    ];
+    
+    const types = ['Actualización', 'Migración', 'Configuración', 'Instalación', 'Mantenimiento'];
+    const impacts = ['Bajo', 'Medio', 'Alto'];
+    const statuses = ['Aprobado', 'En Ejecución', 'Completado', 'Rechazado'];
+    
+    transitions = [];
+    for (let i = 0; i < 12; i++) {
+        transitions.push({
+            id: `CH-${300 + i}`,
+            description: descriptions[i % descriptions.length],
+            type: types[randomBetween(0, types.length - 1)],
+            impact: impacts[randomBetween(0, impacts.length - 1)],
+            status: statuses[randomBetween(0, statuses.length - 1)],
+            date: new Date(Date.now() - randomBetween(1, 15) * 86400000).toLocaleDateString('es-ES')
+        });
+    }
+}
+
+function generateSecurityAudits() {
+    const types = ['Seguridad Física', 'Seguridad Lógica', 'Cumplimiento ISO 27001', 'Análisis de Vulnerabilidades', 'Pruebas de Penetración'];
+    const areas = ['Infraestructura', 'Aplicaciones', 'Base de Datos', 'Red', 'Servidores'];
+    const results = ['Satisfactorio', 'Con Observaciones', 'Requiere Mejoras'];
+    
+    securityAudits = [];
+    for (let i = 0; i < 10; i++) {
+        securityAudits.push({
+            id: `AUD-${400 + i}`,
+            type: types[randomBetween(0, types.length - 1)],
+            area: areas[randomBetween(0, areas.length - 1)],
+            result: results[randomBetween(0, results.length - 1)],
+            findings: randomBetween(0, 8),
+            date: new Date(Date.now() - randomBetween(1, 90) * 86400000).toLocaleDateString('es-ES')
+        });
+    }
+}
+
+function generateControlAlerts() {
+    const types = ['Info', 'Warning', 'Error', 'Critical'];
+    const origins = ['Servidor Web 1', 'Servidor Web 2', 'Base de Datos', 'Firewall', 'NAS Storage', 'Red Principal'];
+    const messages = [
+        'Uso de CPU al 85%',
+        'Memoria RAM crítica',
+        'Espacio en disco bajo',
+        'Temperatura elevada detectada',
+        'Conexiones simultáneas altas',
+        'Tráfico de red inusual',
+        'Servicio reiniciado automáticamente',
+        'Backup completado exitosamente',
+        'Intento de acceso no autorizado bloqueado',
+        'Actualización de sistema pendiente'
+    ];
+    const statuses = ['Nuevo', 'En Revisión', 'Resuelto', 'Ignorado'];
+    
+    controlAlerts = [];
+    for (let i = 0; i < 15; i++) {
+        const now = new Date(Date.now() - randomBetween(0, 120) * 60000);
+        controlAlerts.push({
+            timestamp: now.toLocaleTimeString('es-ES'),
+            type: types[randomBetween(0, types.length - 1)],
+            origin: origins[randomBetween(0, origins.length - 1)],
+            message: messages[randomBetween(0, messages.length - 1)],
+            severity: types[randomBetween(0, types.length - 1)],
+            status: statuses[randomBetween(0, statuses.length - 1)]
         });
     }
 }
@@ -295,15 +443,39 @@ function agregarTicketManual() {
     };
     
     tickets.push(ticket);
-    
-    // Limpiar formulario
     document.getElementById('formTicket').reset();
-    
-    // Actualizar todo
     updateAllDisplays();
     updateAllCharts();
-    
     showNotification(`Ticket ${ticket.id} creado exitosamente`, 'success');
+}
+
+// ===== AGREGAR RIESGO MANUAL =====
+function agregarRiesgoManual() {
+    const desc = document.getElementById('inputDescRiesgo').value;
+    const categoria = document.getElementById('inputCategoriaRiesgo').value;
+    const impacto = document.getElementById('inputImpactoRiesgo').value;
+    const probabilidad = document.getElementById('inputProbabilidadRiesgo').value;
+    
+    if (!desc || !categoria || !impacto || !probabilidad) {
+        showNotification('Por favor complete todos los campos', 'warning');
+        return;
+    }
+    
+    const risk = {
+        id: `RK-${100 + risks.length}`,
+        description: desc,
+        category: categoria,
+        impact: impacto,
+        probability: probabilidad,
+        level: calculateRiskLevel(impacto, probabilidad),
+        status: 'Activo'
+    };
+    
+    risks.push(risk);
+    document.getElementById('formRiesgo').reset();
+    updateAllDisplays();
+    updateAllCharts();
+    showNotification(`Riesgo ${risk.id} registrado exitosamente`, 'success');
 }
 
 // ===== GENERAR PLAN =====
@@ -317,7 +489,6 @@ function generarPlan() {
         return;
     }
     
-    // Crear nueva tarea
     const nuevaTarea = {
         responsible: 'Juan Pérez',
         task: objetivo,
@@ -328,17 +499,10 @@ function generarPlan() {
     };
     
     planningTasks.push(nuevaTarea);
-    
-    // Actualizar métricas
     document.getElementById('presupuestoPlan').textContent = `$${parseInt(presupuesto).toLocaleString()}`;
-    
-    // Limpiar formulario
     document.getElementById('formPlanificacion').reset();
-    
-    // Actualizar todo
     updateAllDisplays();
     updateAllCharts();
-    
     showNotification('Plan estratégico generado correctamente', 'success');
 }
 
@@ -358,7 +522,13 @@ function startSimulation() {
         
         if (Math.random() > 0.85) {
             generateRisk();
+            updateAllDisplays();
             updateAllCharts();
+        }
+        
+        if (Math.random() > 0.95) {
+            generateControlAlerts();
+            updateControlAlertsTable();
         }
         
         if (Math.random() > 0.9) {
@@ -387,9 +557,46 @@ function updateGlobalMetrics() {
     animateNumber('ticketsResueltos', closedTickets);
     document.getElementById('tiempoResolucion').textContent = `${avgTime.toFixed(1)}h`;
     
+    // Riesgos
+    animateNumber('riesgosCriticos', risks.filter(r => r.level === 'Crítico').length);
+    animateNumber('riesgosAltos', risks.filter(r => r.level === 'Alto').length);
+    animateNumber('riesgosMitigados', risks.filter(r => r.status === 'Mitigado').length);
+    animateNumber('indiceResiliencia', randomBetween(75, 95), '%');
+    
+    // Diseño
+    animateNumber('arquitecturasActivas', designServices.length);
+    animateNumber('disenosAprobados', designServices.filter(d => d.status === 'Aprobado').length);
+    animateNumber('disenosEnProceso', designServices.filter(d => d.status === 'En Revisión').length);
+    animateNumber('cumplimientoDiseno', randomBetween(85, 98), '%');
+    
+    // Transición
+    animateNumber('desplieguesTotal', transitions.length);
+    animateNumber('desplieguesExitosos', transitions.filter(t => t.status === 'Completado').length);
+    animateNumber('cambiosPendientes', transitions.filter(t => t.status === 'Aprobado').length);
+    const tasaExito = transitions.length > 0 ? Math.round((transitions.filter(t => t.status === 'Completado').length / transitions.length) * 100) : 0;
+    animateNumber('tasaExitoTransicion', tasaExito, '%');
+    
+    // Mejora Continua
+    animateNumber('iniciativasMejora', randomBetween(8, 15));
+    animateNumber('mejorasImplementadas', randomBetween(12, 25));
+    animateNumber('kpisMejora', randomBetween(18, 24));
+    animateNumber('impactoMejora', randomBetween(75, 95), '%');
+    
+    // Seguridad
+    animateNumber('controlesActivos', randomBetween(45, 65));
+    animateNumber('cumplimientoISO', randomBetween(85, 98), '%');
+    animateNumber('vulnerabilidades', randomBetween(2, 12));
+    animateNumber('incidentesSeguridad', randomBetween(0, 5));
+    
+    // Centro de Control
+    animateNumber('servidoresActivos', randomBetween(12, 18));
+    animateNumber('serviciosOperativos', randomBetween(95, 100), '%');
+    animateNumber('usoCPU', randomBetween(35, 75), '%');
+    animateNumber('usoMemoria', randomBetween(40, 80), '%');
+    
     updateTrafficLight(satisfaction);
     
-    const globalProgress = randomBetween(75, 95);
+    const globalProgress = randomBetween(80, 95);
     updateProgressBar('progressGlobal', 'progressGlobalText', globalProgress);
 }
 
@@ -398,6 +605,11 @@ function updateAllDisplays() {
     updateTicketsTable();
     updatePlanningTable();
     updatePlanificacionMetrics();
+    updateRisksTable();
+    updateDesignTable();
+    updateTransitionTable();
+    updateSecurityTable();
+    updateControlAlertsTable();
 }
 
 // ===== TABLAS =====
@@ -405,7 +617,7 @@ function updateTicketsTable() {
     const tbody = document.getElementById('tablaTickets');
     tbody.innerHTML = '';
     
-    tickets.slice(-20).reverse().forEach(ticket => {
+    tickets.slice(-25).reverse().forEach(ticket => {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td><strong>${ticket.id}</strong></td>
@@ -419,25 +631,39 @@ function updateTicketsTable() {
     });
 }
 
-function updatePlanningTable() {
-    const tbody = document.getElementById('tablaPlanificacion');
+function updateSecurityTable() {
+    const tbody = document.getElementById('tablaSeguridad');
     if (!tbody) return;
     tbody.innerHTML = '';
     
-    planningTasks.forEach(task => {
+    securityAudits.forEach(audit => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td><strong>${task.responsible}</strong></td>
-            <td>${task.task}</td>
-            <td><span class="badge badge-${getTaskStatusClass(task.status)}">${task.status}</span></td>
-            <td>
-                <div class="progress-wrapper" style="height: 20px;">
-                    <div class="progress-fill" style="width: ${task.progress}%"></div>
-                    <span class="progress-text" style="font-size: 0.8rem;">${task.progress}%</span>
-                </div>
-            </td>
-            <td>${task.startDate}</td>
-            <td>${task.endDate}</td>
+            <td><strong>${audit.id}</strong></td>
+            <td><span class="badge badge-info">${audit.type}</span></td>
+            <td>${audit.area}</td>
+            <td><span class="badge badge-${getAuditResultClass(audit.result)}">${audit.result}</span></td>
+            <td><strong>${audit.findings}</strong></td>
+            <td>${audit.date}</td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function updateControlAlertsTable() {
+    const tbody = document.getElementById('tablaAlertas');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    
+    controlAlerts.slice(-15).reverse().forEach(alert => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${alert.timestamp}</strong></td>
+            <td><span class="badge badge-${getSeverityClass(alert.type)}">${alert.type}</span></td>
+            <td>${alert.origin}</td>
+            <td>${alert.message}</td>
+            <td><span class="badge badge-${getSeverityClass(alert.severity)}">${alert.severity}</span></td>
+            <td><span class="badge badge-primary">${alert.status}</span></td>
         `;
         tbody.appendChild(row);
     });
@@ -492,7 +718,7 @@ function animateNumber(elementId, targetValue, suffix = '') {
     element.textContent = targetValue + suffix;
 }
 
-// ===== FILTRADO DE TICKETS =====
+// ===== FILTRADO =====
 function filterTickets(filter) {
     const tbody = document.getElementById('tablaTickets');
     const rows = tbody.getElementsByTagName('tr');
@@ -504,6 +730,22 @@ function filterTickets(filter) {
             const statusCell = row.cells[3];
             const status = statusCell.textContent.toLowerCase();
             row.style.display = status.includes(filter) ? '' : 'none';
+        }
+    });
+}
+
+function filterRisks(filter) {
+    const tbody = document.getElementById('tablaRiesgos');
+    if (!tbody) return;
+    const rows = tbody.getElementsByTagName('tr');
+    
+    Array.from(rows).forEach(row => {
+        if (filter === 'all') {
+            row.style.display = '';
+        } else {
+            const levelCell = row.cells[5];
+            const level = levelCell.textContent.trim();
+            row.style.display = level.includes(filter) ? '' : 'none';
         }
     });
 }
@@ -561,6 +803,41 @@ function getTaskStatusClass(status) {
     return map[status] || 'info';
 }
 
+function getImpactClass(impact) {
+    const map = { 'Crítico': 'danger', 'Alto': 'warning', 'Medio': 'info', 'Bajo': 'success' };
+    return map[impact] || 'info';
+}
+
+function getProbabilityClass(probability) {
+    const map = { 'Alta': 'danger', 'Media': 'warning', 'Baja': 'success' };
+    return map[probability] || 'info';
+}
+
+function getRiskLevelClass(level) {
+    const map = { 'Crítico': 'danger', 'Alto': 'warning', 'Medio': 'info', 'Bajo': 'success' };
+    return map[level] || 'info';
+}
+
+function getDesignStatusClass(status) {
+    const map = { 'Aprobado': 'success', 'En Revisión': 'warning', 'Diseño Completado': 'info' };
+    return map[status] || 'info';
+}
+
+function getTransitionStatusClass(status) {
+    const map = { 'Completado': 'success', 'En Ejecución': 'warning', 'Aprobado': 'info', 'Rechazado': 'danger' };
+    return map[status] || 'info';
+}
+
+function getAuditResultClass(result) {
+    const map = { 'Satisfactorio': 'success', 'Con Observaciones': 'warning', 'Requiere Mejoras': 'danger' };
+    return map[result] || 'info';
+}
+
+function getSeverityClass(severity) {
+    const map = { 'Critical': 'danger', 'Error': 'danger', 'Warning': 'warning', 'Info': 'info' };
+    return map[severity] || 'info';
+}
+
 function calculateRiskLevel(impact, probability) {
     const impactScore = { 'Bajo': 1, 'Medio': 2, 'Alto': 3, 'Crítico': 4 };
     const probScore = { 'Baja': 1, 'Media': 2, 'Alta': 3 };
@@ -573,7 +850,7 @@ function calculateRiskLevel(impact, probability) {
     return 'Bajo';
 }
 
-// ===== INICIALIZACIÓN DE GRÁFICOS (9 GRÁFICOS) =====
+// ===== INICIALIZACIÓN DE GRÁFICOS =====
 function initializeCharts() {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     const textColor = isDark ? '#ecf0f1' : '#2c3e50';
@@ -892,7 +1169,7 @@ function initializeCharts() {
         }]
     });
     
-    // Gráfico de Planificación
+    // 10. Gráfico de Planificación
     const ctxPlan = document.getElementById('chartPlanificacion');
     if (ctxPlan) {
         charts.planificacion = new Chart(ctxPlan, {
@@ -921,7 +1198,7 @@ function initializeCharts() {
         });
     }
     
-    // Gráfico de Tickets
+    // 11. Gráfico de Tickets
     const ctxTickets = document.getElementById('chartTickets');
     if (ctxTickets) {
         charts.tickets = new Chart(ctxTickets, {
@@ -968,6 +1245,533 @@ function initializeCharts() {
             }
         });
     }
+
+    // 12. Gráficos de Diseño
+    const ctxArq = document.getElementById('chartArquitectura');
+    if (ctxArq) {
+        charts.arquitectura = new Chart(ctxArq, {
+            type: 'bar',
+            data: {
+                labels: ['Aplicación', 'Infraestructura', 'Datos', 'Seguridad', 'Integración'],
+                datasets: [{
+                    label: 'Servicios',
+                    data: [8, 5, 4, 6, 3],
+                    backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                    borderColor: 'rgb(52, 152, 219)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor } },
+                    x: { ticks: { color: textColor }, grid: { color: gridColor } }
+                }
+            }
+        });
+    }
+
+    const ctxCapDiseno = document.getElementById('chartCapacidadDiseno');
+    if (ctxCapDiseno) {
+        charts.capacidadDiseno = new Chart(ctxCapDiseno, {
+            type: 'line',
+            data: {
+                labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+                datasets: [{
+                    label: 'Disponibilidad %',
+                    data: [99.2, 99.5, 99.8, 99.3, 99.6, 99.9, 99.7],
+                    borderColor: 'rgb(46, 204, 113)',
+                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { min: 98, max: 100, ticks: { color: textColor }, grid: { color: gridColor } },
+                    x: { ticks: { color: textColor }, grid: { color: gridColor } }
+                }
+            }
+        });
+    }
+
+    // 13. Gráficos de Transición
+    const ctxCambios = document.getElementById('chartCambios');
+    if (ctxCambios) {
+        charts.cambios = new Chart(ctxCambios, {
+            type: 'doughnut',
+            data: {
+                labels: ['Aprobado', 'En Ejecución', 'Completado', 'Rechazado'],
+                datasets: [{
+                    data: [3, 4, 8, 1],
+                    backgroundColor: [
+                        'rgba(52, 152, 219, 0.8)',
+                        'rgba(241, 196, 15, 0.8)',
+                        'rgba(46, 204, 113, 0.8)',
+                        'rgba(231, 76, 60, 0.8)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: textColor, padding: 8, font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    const ctxDespliegues = document.getElementById('chartDespliegues');
+    if (ctxDespliegues) {
+        charts.despliegues = new Chart(ctxDespliegues, {
+            type: 'bar',
+            data: {
+                labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+                datasets: [{
+                    label: 'Exitosos',
+                    data: [5, 7, 6, 8],
+                    backgroundColor: 'rgba(46, 204, 113, 0.7)',
+                    borderColor: 'rgb(46, 204, 113)',
+                    borderWidth: 2
+                }, {
+                    label: 'Fallidos',
+                    data: [1, 0, 2, 1],
+                    backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                    borderColor: 'rgb(231, 76, 60)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { labels: { color: textColor } } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor } },
+                    x: { ticks: { color: textColor }, grid: { color: gridColor } }
+                }
+            }
+        });
+    }
+
+    // 14. Gráficos de Mejora Continua
+    const ctxKPIs = document.getElementById('chartKPIs');
+    if (ctxKPIs) {
+        charts.kpis = new Chart(ctxKPIs, {
+            type: 'line',
+            data: {
+                labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Cumplimiento',
+                    data: [78, 82, 85, 88, 91, 94],
+                    borderColor: 'rgb(52, 152, 219)',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, max: 100, ticks: { color: textColor }, grid: { color: gridColor } },
+                    x: { ticks: { color: textColor }, grid: { color: gridColor } }
+                }
+            }
+        });
+    }
+
+    const ctxIniciativas = document.getElementById('chartIniciativas');
+    if (ctxIniciativas) {
+        charts.iniciativas = new Chart(ctxIniciativas, {
+            type: 'pie',
+            data: {
+                labels: ['Implementadas', 'En Progreso', 'Planificadas'],
+                datasets: [{
+                    data: [12, 8, 5],
+                    backgroundColor: [
+                        'rgba(46, 204, 113, 0.8)',
+                        'rgba(241, 196, 15, 0.8)',
+                        'rgba(52, 152, 219, 0.8)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: textColor, padding: 8, font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    // 15. Gráficos de Riesgos Adicionales
+    const ctxMatrizRiesgos = document.getElementById('chartMatrizRiesgos');
+    if (ctxMatrizRiesgos) {
+        charts.matrizRiesgos = new Chart(ctxMatrizRiesgos, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Riesgos',
+                    data: [
+                        { x: 3, y: 4 }, { x: 2, y: 3 }, { x: 1, y: 2 },
+                        { x: 3, y: 2 }, { x: 2, y: 4 }, { x: 1, y: 3 },
+                        { x: 2, y: 2 }, { x: 3, y: 3 }
+                    ],
+                    backgroundColor: 'rgba(231, 76, 60, 0.6)',
+                    borderColor: 'rgb(231, 76, 60)',
+                    pointRadius: 8,
+                    pointHoverRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        title: { display: true, text: 'Impacto', color: textColor },
+                        min: 0,
+                        max: 5,
+                        ticks: { color: textColor },
+                        grid: { color: gridColor }
+                    },
+                    x: {
+                        title: { display: true, text: 'Probabilidad', color: textColor },
+                        min: 0,
+                        max: 4,
+                        ticks: { color: textColor },
+                        grid: { color: gridColor }
+                    }
+                }
+            }
+        });
+    }
+
+    const ctxCategoriasRiesgo = document.getElementById('chartCategoriasRiesgo');
+    if (ctxCategoriasRiesgo) {
+        charts.categoriasRiesgo = new Chart(ctxCategoriasRiesgo, {
+            type: 'pie',
+            data: {
+                labels: ['Seguridad', 'Operacional', 'Estratégico', 'Cumplimiento', 'Financiero'],
+                datasets: [{
+                    data: [8, 5, 4, 6, 3],
+                    backgroundColor: [
+                        'rgba(231, 76, 60, 0.8)',
+                        'rgba(243, 156, 18, 0.8)',
+                        'rgba(52, 152, 219, 0.8)',
+                        'rgba(155, 89, 182, 0.8)',
+                        'rgba(46, 204, 113, 0.8)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: textColor, padding: 8, font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    // 16. Gráficos de Seguridad
+    const ctxVulnerabilidades = document.getElementById('chartVulnerabilidades');
+    if (ctxVulnerabilidades) {
+        charts.vulnerabilidades = new Chart(ctxVulnerabilidades, {
+            type: 'bar',
+            data: {
+                labels: ['Críticas', 'Altas', 'Medias', 'Bajas'],
+                datasets: [{
+                    label: 'Cantidad',
+                    data: [2, 5, 12, 18],
+                    backgroundColor: [
+                        'rgba(231, 76, 60, 0.7)',
+                        'rgba(243, 156, 18, 0.7)',
+                        'rgba(241, 196, 15, 0.7)',
+                        'rgba(46, 204, 113, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgb(231, 76, 60)',
+                        'rgb(243, 156, 18)',
+                        'rgb(241, 196, 15)',
+                        'rgb(46, 204, 113)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: textColor, stepSize: 2 }, grid: { color: gridColor } },
+                    x: { ticks: { color: textColor }, grid: { color: gridColor } }
+                }
+            }
+        });
+    }
+
+    const ctxControles = document.getElementById('chartControles');
+    if (ctxControles) {
+        charts.controles = new Chart(ctxControles, {
+            type: 'doughnut',
+            data: {
+                labels: ['Implementados', 'En Progreso', 'Planificados'],
+                datasets: [{
+                    data: [45, 12, 8],
+                    backgroundColor: [
+                        'rgba(46, 204, 113, 0.8)',
+                        'rgba(241, 196, 15, 0.8)',
+                        'rgba(52, 152, 219, 0.8)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: textColor, padding: 8, font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    const ctxIncidentesSeguridad = document.getElementById('chartIncidentesSeguridad');
+    if (ctxIncidentesSeguridad) {
+        charts.incidentesSeguridad = new Chart(ctxIncidentesSeguridad, {
+            type: 'line',
+            data: {
+                labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Incidentes',
+                    data: [5, 3, 4, 2, 1, 3],
+                    borderColor: 'rgb(231, 76, 60)',
+                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: textColor, stepSize: 1 }, grid: { color: gridColor } },
+                    x: { ticks: { color: textColor }, grid: { color: gridColor } }
+                }
+            }
+        });
+    }
+
+    const ctxCumplimientoNormativo = document.getElementById('chartCumplimientoNormativo');
+    if (ctxCumplimientoNormativo) {
+        charts.cumplimientoNormativo = new Chart(ctxCumplimientoNormativo, {
+            type: 'bar',
+            data: {
+                labels: ['ISO 27001', 'GDPR', 'SOC 2', 'PCI DSS'],
+                datasets: [{
+                    label: 'Cumplimiento %',
+                    data: [95, 88, 92, 85],
+                    backgroundColor: 'rgba(46, 204, 113, 0.7)',
+                    borderColor: 'rgb(46, 204, 113)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, max: 100, ticks: { color: textColor }, grid: { color: gridColor } },
+                    x: { ticks: { color: textColor }, grid: { color: gridColor } }
+                }
+            }
+        });
+    }
+
+    // 17. Gráficos del Centro de Control
+    const ctxMetricasControl = document.getElementById('chartMetricasControl');
+    if (ctxMetricasControl) {
+        charts.metricasControl = new Chart(ctxMetricasControl, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 20}, (_, i) => `${i}:00`),
+                datasets: [{
+                    label: 'CPU %',
+                    data: Array.from({length: 20}, () => randomBetween(30, 70)),
+                    borderColor: 'rgb(52, 152, 219)',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 2
+                }, {
+                    label: 'Memoria %',
+                    data: Array.from({length: 20}, () => randomBetween(40, 80)),
+                    borderColor: 'rgb(231, 76, 60)',
+                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { labels: { color: textColor, padding: 10 } }
+                },
+                scales: {
+                    y: { beginAtZero: true, max: 100, ticks: { color: textColor }, grid: { color: gridColor } },
+                    x: { ticks: { color: textColor, maxTicksLimit: 10 }, grid: { color: gridColor } }
+                }
+            }
+        });
+    }
+
+    const ctxRecursos = document.getElementById('chartRecursos');
+    if (ctxRecursos) {
+        charts.recursos = new Chart(ctxRecursos, {
+            type: 'line',
+            data: {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                datasets: [{
+                    label: 'CPU %',
+                    data: [35, 40, 65, 72, 58, 45],
+                    borderColor: 'rgb(52, 152, 219)',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 2
+                }, {
+                    label: 'RAM %',
+                    data: [45, 48, 72, 78, 65, 52],
+                    borderColor: 'rgb(155, 89, 182)',
+                    backgroundColor: 'rgba(155, 89, 182, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 2
+                }, {
+                    label: 'Disco %',
+                    data: [55, 56, 58, 62, 60, 58],
+                    borderColor: 'rgb(241, 196, 15)',
+                    backgroundColor: 'rgba(241, 196, 15, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { labels: { color: textColor, padding: 8, font: { size: 10 } } }
+                },
+                scales: {
+                    y: { beginAtZero: true, max: 100, ticks: { color: textColor }, grid: { color: gridColor } },
+                    x: { ticks: { color: textColor }, grid: { color: gridColor } }
+                }
+            }
+        });
+    }
+
+    const ctxTrafico = document.getElementById('chartTrafico');
+    if (ctxTrafico) {
+        charts.trafico = new Chart(ctxTrafico, {
+            type: 'bar',
+            data: {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                datasets: [{
+                    label: 'Entrada (Mbps)',
+                    data: [120, 80, 250, 380, 320, 180],
+                    backgroundColor: 'rgba(46, 204, 113, 0.7)',
+                    borderColor: 'rgb(46, 204, 113)',
+                    borderWidth: 2
+                }, {
+                    label: 'Salida (Mbps)',
+                    data: [90, 60, 180, 280, 240, 140],
+                    backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                    borderColor: 'rgb(52, 152, 219)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { labels: { color: textColor, padding: 8, font: { size: 10 } } }
+                },
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor } },
+                    x: { ticks: { color: textColor }, grid: { color: gridColor } }
+                }
+            }
+        });
+    }
+
+    const ctxTemperatura = document.getElementById('chartTemperatura');
+    if (ctxTemperatura) {
+        charts.temperatura = new Chart(ctxTemperatura, {
+            type: 'line',
+            data: {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                datasets: [{
+                    label: 'Temperatura °C',
+                    data: [22, 21, 24, 26, 25, 23],
+                    borderColor: 'rgb(231, 76, 60)',
+                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { min: 18, max: 30, ticks: { color: textColor }, grid: { color: gridColor } },
+                    x: { ticks: { color: textColor }, grid: { color: gridColor } }
+                }
+            }
+        });
+    }
+
+    const ctxEnergia = document.getElementById('chartEnergia');
+    if (ctxEnergia) {
+        charts.energia = new Chart(ctxEnergia, {
+            type: 'bar',
+            data: {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                datasets: [{
+                    label: 'Consumo (kWh)',
+                    data: [45, 38, 62, 75, 68, 52],
+                    backgroundColor: 'rgba(241, 196, 15, 0.7)',
+                    borderColor: 'rgb(241, 196, 15)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor } },
+                    x: { ticks: { color: textColor }, grid: { color: gridColor } }
+                }
+            }
+        });
+    }
 }
 
 // ===== ACTUALIZACIÓN DE GRÁFICOS =====
@@ -984,14 +1788,12 @@ function updateAllCharts() {
         charts.fases.update('none');
     }
     
-    // Actualizar Tendencia Mensual con datos reales de tickets
+    // Actualizar Tendencia Mensual
     if (charts.tendencia) {
         const satisfaction = tickets.length > 0 
             ? Math.min(98, 80 + (tickets.filter(t => t.status === 'Cerrado').length / tickets.length) * 18)
             : randomBetween(80, 95);
         
-        // Mantener historial de 6 meses
-        const lastValue = charts.tendencia.data.datasets[0].data[5] || satisfaction;
         charts.tendencia.data.datasets[0].data.shift();
         charts.tendencia.data.datasets[0].data.push(Math.floor(satisfaction));
         charts.tendencia.update('none');
@@ -1009,7 +1811,7 @@ function updateAllCharts() {
         charts.capacidad.update('none');
     }
     
-    // Actualizar Nivel de Riesgos con datos reales
+    // Actualizar Nivel de Riesgos
     if (charts.riesgos) {
         const risksByLevel = {
             'Crítico': risks.filter(r => r.level === 'Crítico').length,
@@ -1057,12 +1859,11 @@ function updateAllCharts() {
         charts.planificacion.update('none');
     }
     
-    // Actualizar Gráfico de Tickets con datos reales
+    // Actualizar Gráfico de Tickets
     if (charts.tickets) {
         const abiertos = tickets.filter(t => t.status === 'Abierto').length;
         const cerrados = tickets.filter(t => t.status === 'Cerrado').length;
         
-        // Actualizar último valor
         charts.tickets.data.datasets[0].data.shift();
         charts.tickets.data.datasets[0].data.push(abiertos);
         
@@ -1100,7 +1901,7 @@ function updateAllCharts() {
         charts.seguridad.update('none');
     }
     
-    // Actualizar Distribución de Servicios (menos frecuente)
+    // Actualizar Distribución de Servicios
     if (charts.servicios && Math.random() > 0.8) {
         charts.servicios.data.datasets[0].data = [
             randomBetween(20, 30),
@@ -1110,6 +1911,35 @@ function updateAllCharts() {
             randomBetween(5, 15)
         ];
         charts.servicios.update('none');
+    }
+
+    // Actualizar gráficos de Centro de Control
+    if (charts.metricasControl) {
+        charts.metricasControl.data.datasets[0].data.shift();
+        charts.metricasControl.data.datasets[0].data.push(randomBetween(30, 70));
+        charts.metricasControl.data.datasets[1].data.shift();
+        charts.metricasControl.data.datasets[1].data.push(randomBetween(40, 80));
+        charts.metricasControl.update('none');
+    }
+
+    // Actualizar categorías de riesgo
+    if (charts.categoriasRiesgo) {
+        const risksByCategory = {
+            'Seguridad': risks.filter(r => r.category === 'Seguridad').length,
+            'Operacional': risks.filter(r => r.category === 'Operacional').length,
+            'Estratégico': risks.filter(r => r.category === 'Estratégico').length,
+            'Cumplimiento': risks.filter(r => r.category === 'Cumplimiento').length,
+            'Financiero': risks.filter(r => r.category === 'Financiero').length
+        };
+        
+        charts.categoriasRiesgo.data.datasets[0].data = [
+            risksByCategory['Seguridad'],
+            risksByCategory['Operacional'],
+            risksByCategory['Estratégico'],
+            risksByCategory['Cumplimiento'],
+            risksByCategory['Financiero']
+        ];
+        charts.categoriasRiesgo.update('none');
     }
 }
 
@@ -1138,10 +1968,96 @@ function updateChartsTheme() {
                     if (chart.options.scales[axis].pointLabels) {
                         chart.options.scales[axis].pointLabels.color = textColor;
                     }
+                    if (chart.options.scales[axis].title) {
+                        chart.options.scales[axis].title.color = textColor;
+                    }
                 }
             });
         }
         
         chart.update();
+    });
+}
+}
+
+function updatePlanningTable() {
+    const tbody = document.getElementById('tablaPlanificacion');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    
+    planningTasks.forEach(task => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${task.responsible}</strong></td>
+            <td>${task.task}</td>
+            <td><span class="badge badge-${getTaskStatusClass(task.status)}">${task.status}</span></td>
+            <td>
+                <div class="progress-wrapper" style="height: 20px;">
+                    <div class="progress-fill" style="width: ${task.progress}%"></div>
+                    <span class="progress-text" style="font-size: 0.8rem;">${task.progress}%</span>
+                </div>
+            </td>
+            <td>${task.startDate}</td>
+            <td>${task.endDate}</td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function updateRisksTable() {
+    const tbody = document.getElementById('tablaRiesgos');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    
+    risks.slice(-20).reverse().forEach(risk => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${risk.id}</strong></td>
+            <td>${risk.description}</td>
+            <td><span class="badge badge-info">${risk.category}</span></td>
+            <td><span class="badge badge-${getImpactClass(risk.impact)}">${risk.impact}</span></td>
+            <td><span class="badge badge-${getProbabilityClass(risk.probability)}">${risk.probability}</span></td>
+            <td><span class="badge badge-${getRiskLevelClass(risk.level)}">${risk.level}</span></td>
+            <td><span class="badge badge-primary">${risk.status}</span></td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function updateDesignTable() {
+    const tbody = document.getElementById('tablaDiseno');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    
+    designServices.forEach(service => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${service.id}</strong></td>
+            <td>${service.name}</td>
+            <td><span class="badge badge-info">${service.category}</span></td>
+            <td><span class="badge badge-${getDesignStatusClass(service.status)}">${service.status}</span></td>
+            <td><strong>${service.availability}</strong></td>
+            <td>${service.lastReview}</td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function updateTransitionTable() {
+    const tbody = document.getElementById('tablaTransicion');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    
+    transitions.forEach(transition => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${transition.id}</strong></td>
+            <td>${transition.description}</td>
+            <td><span class="badge badge-info">${transition.type}</span></td>
+            <td><span class="badge badge-${getImpactClass(transition.impact)}">${transition.impact}</span></td>
+            <td><span class="badge badge-${getTransitionStatusClass(transition.status)}">${transition.status}</span></td>
+            <td>${transition.date}</td>
+        `;
+        tbody.appendChild(row);
     });
 }
