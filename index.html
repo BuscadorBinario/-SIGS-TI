@@ -8,8 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Fondo animado con partículas -->
     <canvas id="particles"></canvas>
 
+    <!-- Encabezado -->
     <header class="header">
         <div class="header-left">
             <i class="fas fa-server logo-icon"></i>
@@ -30,6 +32,7 @@
         </div>
     </header>
 
+    <!-- Menú de navegación -->
     <nav class="sidebar">
         <ul class="nav-menu">
             <li data-section="dashboard" class="active">
@@ -71,9 +74,10 @@
         </ul>
     </nav>
 
+    <!-- Contenido principal -->
     <main class="main-content">
         
-        <!-- DASHBOARD -->
+        <!-- DASHBOARD GENERAL -->
         <section id="dashboard" class="content-section active">
             <h2 class="section-title">
                 <i class="fas fa-th-large"></i> Dashboard General
@@ -118,7 +122,7 @@
                 </div>
             </div>
 
-            <div class="dashboard-grid-nine">
+            <div class="dashboard-grid">
                 <div class="dashboard-card">
                     <h3><i class="fas fa-chart-bar"></i> Rendimiento por Fase</h3>
                     <canvas id="chartFases"></canvas>
@@ -132,6 +136,13 @@
                     <canvas id="chartTendencia"></canvas>
                 </div>
                 <div class="dashboard-card">
+                    <h3><i class="fas fa-bullseye"></i> Cumplimiento SLA</h3>
+                    <div class="gauge-container">
+                        <canvas id="gaugeSLA"></canvas>
+                    </div>
+                </div>
+                <!-- NUEVOS GRÁFICOS -->
+                <div class="dashboard-card">
                     <h3><i class="fas fa-users"></i> Capacidad del Equipo</h3>
                     <canvas id="chartCapacidad"></canvas>
                 </div>
@@ -142,20 +153,6 @@
                 <div class="dashboard-card">
                     <h3><i class="fas fa-project-diagram"></i> Estado de Proyectos</h3>
                     <canvas id="chartProyectos"></canvas>
-                </div>
-                <div class="dashboard-card">
-                    <h3><i class="fas fa-exclamation-triangle"></i> Nivel de Riesgos</h3>
-                    <canvas id="chartRiesgos"></canvas>
-                </div>
-                <div class="dashboard-card">
-                    <h3><i class="fas fa-shield-alt"></i> Seguridad y Cumplimiento</h3>
-                    <canvas id="chartSeguridad"></canvas>
-                </div>
-                <div class="dashboard-card">
-                    <h3><i class="fas fa-bullseye"></i> Cumplimiento SLA</h3>
-                    <div class="gauge-container">
-                        <canvas id="gaugeSLA"></canvas>
-                    </div>
                 </div>
             </div>
 
@@ -177,11 +174,11 @@
             <div class="phase-grid">
                 <div class="phase-card">
                     <h3><i class="fas fa-bullseye"></i> Registro de Objetivos</h3>
-                    <form class="form-planificacion" id="formPlanificacion">
-                        <input type="text" id="inputObjetivo" placeholder="Objetivo estratégico" class="input-field" required>
-                        <input type="text" id="inputAlcance" placeholder="Alcance del proyecto" class="input-field" required>
-                        <input type="number" id="inputPresupuesto" placeholder="Presupuesto ($)" class="input-field" required>
-                        <button type="submit" class="btn-primary">
+                    <form class="form-planificacion">
+                        <input type="text" placeholder="Objetivo estratégico" class="input-field">
+                        <input type="text" placeholder="Alcance del proyecto" class="input-field">
+                        <input type="number" placeholder="Presupuesto ($)" class="input-field">
+                        <button type="button" class="btn-primary" onclick="generarPlan()">
                             <i class="fas fa-magic"></i> Generar Plan
                         </button>
                     </form>
@@ -239,76 +236,70 @@
             </div>
         </section>
 
-        <!-- DISEÑO -->
+        <!-- DISEÑO DEL SERVICIO -->
         <section id="diseno" class="content-section">
             <h2 class="section-title">
-                <i class="fas fa-drafting-compass"></i> Fase de Diseño de Servicios
+                <i class="fas fa-drafting-compass"></i> Diseño del Servicio
             </h2>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon blue">
-                        <i class="fas fa-layer-group"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="arquitecturasActivas">0</h3>
-                        <p>Arquitecturas Activas</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon green">
-                        <i class="fas fa-check-double"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="disenosAprobados">0</h3>
-                        <p>Diseños Aprobados</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon orange">
-                        <i class="fas fa-pencil-ruler"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="disenosEnProceso">0</h3>
-                        <p>En Proceso</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon purple">
-                        <i class="fas fa-clipboard-check"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="cumplimientoDiseno">0%</h3>
-                        <p>Cumplimiento</p>
-                    </div>
-                </div>
+            <div class="services-catalog">
+                <h3><i class="fas fa-th"></i> Catálogo de Servicios TI</h3>
+                <div class="catalog-grid" id="catalogoServicios"></div>
             </div>
 
             <div class="phase-grid">
                 <div class="phase-card">
-                    <h3><i class="fas fa-project-diagram"></i> Arquitectura de Servicios</h3>
-                    <canvas id="chartArquitectura"></canvas>
+                    <h3><i class="fas fa-file-contract"></i> Definición de SLA</h3>
+                    <div class="sla-editor">
+                        <div class="sla-item">
+                            <label>Disponibilidad Mínima:</label>
+                            <input type="number" id="slaDisponibilidad" value="99.5" step="0.1">
+                            <span>%</span>
+                        </div>
+                        <div class="sla-item">
+                            <label>Tiempo de Respuesta:</label>
+                            <input type="number" id="slaTiempoRespuesta" value="15">
+                            <span>min</span>
+                        </div>
+                        <div class="sla-item">
+                            <label>Tiempo de Resolución:</label>
+                            <input type="number" id="slaTiempoResolucion" value="4">
+                            <span>h</span>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="phase-card">
-                    <h3><i class="fas fa-database"></i> Capacidad y Disponibilidad</h3>
-                    <canvas id="chartCapacidadDiseno"></canvas>
+                    <h3><i class="fas fa-star"></i> Madurez del Diseño</h3>
+                    <canvas id="chartMadurez"></canvas>
                 </div>
             </div>
 
             <div class="table-container">
-                <h3><i class="fas fa-clipboard-list"></i> Catálogo de Servicios de Diseño</h3>
+                <h3><i class="fas fa-exclamation-circle"></i> Riesgos del Diseño</h3>
+                <div class="search-filter-container">
+                    <input type="text" id="searchRiesgoDiseno" placeholder="🔍 Buscar riesgo..." class="search-input">
+                    <select id="filterNivel" class="filter-select">
+                        <option value="all">Todos los niveles</option>
+                        <option value="Crítico">Crítico</option>
+                        <option value="Alto">Alto</option>
+                        <option value="Medio">Medio</option>
+                        <option value="Bajo">Bajo</option>
+                    </select>
+                </div>
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>ID Servicio</th>
-                            <th>Nombre</th>
+                            <th>ID</th>
+                            <th>Riesgo</th>
                             <th>Categoría</th>
-                            <th>Estado</th>
-                            <th>Disponibilidad</th>
-                            <th>Última Revisión</th>
+                            <th>Impacto</th>
+                            <th>Probabilidad</th>
+                            <th>Nivel</th>
+                            <th>Mitigación</th>
                         </tr>
                     </thead>
-                    <tbody id="tablaDiseno"></tbody>
+                    <tbody id="tablaRiesgosDiseno"></tbody>
                 </table>
             </div>
         </section>
@@ -316,73 +307,43 @@
         <!-- TRANSICIÓN -->
         <section id="transicion" class="content-section">
             <h2 class="section-title">
-                <i class="fas fa-exchange-alt"></i> Fase de Transición de Servicios
+                <i class="fas fa-exchange-alt"></i> Transición del Servicio
             </h2>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon blue">
-                        <i class="fas fa-rocket"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="desplieguesTotal">0</h3>
-                        <p>Despliegues Totales</p>
-                    </div>
+            <div class="deployment-status">
+                <h3><i class="fas fa-rocket"></i> Estado del Despliegue</h3>
+                <div class="deployment-progress">
+                    <div class="deployment-bar" id="deploymentBar"></div>
+                    <span id="deploymentText">Iniciando...</span>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon green">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="desplieguesExitosos">0</h3>
-                        <p>Exitosos</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon orange">
-                        <i class="fas fa-sync"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="cambiosPendientes">0</h3>
-                        <p>Cambios Pendientes</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon purple">
-                        <i class="fas fa-percentage"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="tasaExitoTransicion">0%</h3>
-                        <p>Tasa de Éxito</p>
-                    </div>
-                </div>
+                <div class="status-alerts" id="statusAlerts"></div>
             </div>
 
             <div class="phase-grid">
                 <div class="phase-card">
-                    <h3><i class="fas fa-chart-bar"></i> Gestión de Cambios</h3>
-                    <canvas id="chartCambios"></canvas>
+                    <h3><i class="fas fa-code-branch"></i> Registro de Cambios</h3>
+                    <div class="changes-log" id="changesLog"></div>
                 </div>
+
                 <div class="phase-card">
-                    <h3><i class="fas fa-history"></i> Historial de Despliegues</h3>
-                    <canvas id="chartDespliegues"></canvas>
+                    <h3><i class="fas fa-vial"></i> Pruebas Piloto</h3>
+                    <canvas id="chartPruebas"></canvas>
+                    <div class="test-results" id="testResults"></div>
                 </div>
             </div>
 
             <div class="table-container">
-                <h3><i class="fas fa-list-alt"></i> Registro de Cambios</h3>
+                <h3><i class="fas fa-list-ol"></i> Versiones Desplegadas</h3>
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>ID Cambio</th>
-                            <th>Descripción</th>
-                            <th>Tipo</th>
-                            <th>Impacto</th>
-                            <th>Estado</th>
+                            <th>Versión</th>
                             <th>Fecha</th>
+                            <th>Responsable</th>
+                            <th>Estado</th>
                         </tr>
                     </thead>
-                    <tbody id="tablaTransicion"></tbody>
+                    <tbody id="tablaVersiones"></tbody>
                 </table>
             </div>
         </section>
@@ -392,30 +353,6 @@
             <h2 class="section-title">
                 <i class="fas fa-cogs"></i> Operación del Servicio
             </h2>
-
-            <div class="add-ticket-form">
-                <h3><i class="fas fa-plus-circle"></i> Agregar Nuevo Ticket</h3>
-                <form id="formTicket" class="form-inline">
-                    <input type="text" id="inputTituloTicket" placeholder="Título del ticket" class="input-field" required>
-                    <select id="inputPrioridadTicket" class="input-field" required>
-                        <option value="">Seleccionar prioridad</option>
-                        <option value="Alta">Alta</option>
-                        <option value="Media">Media</option>
-                        <option value="Baja">Baja</option>
-                    </select>
-                    <select id="inputAsignadoTicket" class="input-field" required>
-                        <option value="">Asignar a</option>
-                        <option value="Juan Pérez">Juan Pérez</option>
-                        <option value="María García">María García</option>
-                        <option value="Carlos López">Carlos López</option>
-                        <option value="Ana Martínez">Ana Martínez</option>
-                        <option value="Luis Rodríguez">Luis Rodríguez</option>
-                    </select>
-                    <button type="submit" class="btn-primary">
-                        <i class="fas fa-plus"></i> Crear Ticket
-                    </button>
-                </form>
-            </div>
 
             <div class="traffic-lights">
                 <div class="traffic-light" id="trafficLight">
@@ -499,110 +436,104 @@
         <!-- MEJORA CONTINUA -->
         <section id="mejora" class="content-section">
             <h2 class="section-title">
-                <i class="fas fa-chart-line"></i> Mejora Continua del Servicio
+                <i class="fas fa-chart-line"></i> Mejora Continua
             </h2>
+
+            <div class="phase-grid">
+                <div class="phase-card wide">
+                    <h3><i class="fas fa-arrow-trend-up"></i> Tendencia de Mejora</h3>
+                    <canvas id="chartMejora"></canvas>
+                </div>
+            </div>
 
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon blue">
-                        <i class="fas fa-lightbulb"></i>
+                    <div class="stat-icon purple">
+                        <i class="fas fa-trophy"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 id="iniciativasMejora">0</h3>
-                        <p>Iniciativas Activas</p>
+                        <h3 id="indiceMejora">0</h3>
+                        <p>Índice de Mejora</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon green">
-                        <i class="fas fa-trophy"></i>
+                        <i class="fas fa-star"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 id="mejorasImplementadas">0</h3>
-                        <p>Implementadas</p>
+                        <h3 id="satisfaccionMejora">0%</h3>
+                        <p>Satisfacción Usuario</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="desempenoMejora">0%</h3>
+                        <p>Desempeño Global</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon orange">
-                        <i class="fas fa-chart-pie"></i>
+                        <i class="fas fa-lightbulb"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 id="kpisMejora">0</h3>
-                        <p>KPIs en Verde</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon purple">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="impactoMejora">0%</h3>
-                        <p>Impacto Positivo</p>
+                        <h3 id="ideasImplementadas">0</h3>
+                        <p>Ideas Implementadas</p>
                     </div>
                 </div>
             </div>
 
-            <div class="phase-grid">
-                <div class="phase-card">
-                    <h3><i class="fas fa-chart-line"></i> Tendencia de KPIs</h3>
-                    <canvas id="chartKPIs"></canvas>
-                </div>
-                <div class="phase-card">
-                    <h3><i class="fas fa-tasks"></i> Estado de Iniciativas</h3>
-                    <canvas id="chartIniciativas"></canvas>
-                </div>
+            <div class="improvements-container">
+                <h3><i class="fas fa-list-check"></i> Ideas y Sugerencias</h3>
+                <button class="btn-primary" onclick="aplicarMejora()">
+                    <i class="fas fa-magic"></i> Aplicar Mejora
+                </button>
+                <div class="improvements-list" id="listaIdeas"></div>
+            </div>
+
+            <div class="comparison-container">
+                <h3><i class="fas fa-chart-column"></i> Comparativa Histórica</h3>
+                <canvas id="chartHistorico"></canvas>
             </div>
         </section>
 
         <!-- RIESGOS -->
         <section id="riesgos" class="content-section">
             <h2 class="section-title">
-                <i class="fas fa-exclamation-triangle"></i> Gestión de Riesgos
+                <i class="fas fa-exclamation-triangle"></i> Gestión de Riesgos TI
             </h2>
 
-            <div class="add-ticket-form">
-                <h3><i class="fas fa-plus-circle"></i> Registrar Nuevo Riesgo</h3>
-                <form id="formRiesgo" class="form-inline">
-                    <input type="text" id="inputDescRiesgo" placeholder="Descripción del riesgo" class="input-field" required>
-                    <select id="inputCategoriaRiesgo" class="input-field" required>
-                        <option value="">Categoría</option>
-                        <option value="Seguridad">Seguridad</option>
-                        <option value="Operacional">Operacional</option>
-                        <option value="Estratégico">Estratégico</option>
-                        <option value="Cumplimiento">Cumplimiento</option>
-                        <option value="Financiero">Financiero</option>
-                    </select>
-                    <select id="inputImpactoRiesgo" class="input-field" required>
-                        <option value="">Impacto</option>
-                        <option value="Crítico">Crítico</option>
-                        <option value="Alto">Alto</option>
-                        <option value="Medio">Medio</option>
-                        <option value="Bajo">Bajo</option>
-                    </select>
-                    <select id="inputProbabilidadRiesgo" class="input-field" required>
-                        <option value="">Probabilidad</option>
-                        <option value="Alta">Alta</option>
-                        <option value="Media">Media</option>
-                        <option value="Baja">Baja</option>
-                    </select>
-                    <button type="submit" class="btn-primary">
-                        <i class="fas fa-plus"></i> Registrar Riesgo
-                    </button>
-                </form>
+            <div class="risk-matrix-container">
+                <h3><i class="fas fa-th"></i> Matriz de Calor de Riesgos</h3>
+                <div class="heatmap-legend">
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #27ae60;"></span>
+                        <span>Bajo (1-5)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #f1c40f;"></span>
+                        <span>Medio (6-10)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #e67e22;"></span>
+                        <span>Alto (11-15)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #e74c3c;"></span>
+                        <span>Crítico (16-25)</span>
+                    </div>
+                </div>
+                <div class="canvas-wrapper">
+                    <canvas id="riskHeatmap"></canvas>
+                </div>
             </div>
 
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon red">
-                        <i class="fas fa-skull-crossbones"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="riesgosCriticos">0</h3>
-                        <p>Riesgos Críticos</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon orange">
-                        <i class="fas fa-exclamation-circle"></i>
+                        <i class="fas fa-fire"></i>
                     </div>
                     <div class="stat-content">
                         <h3 id="riesgosAltos">0</h3>
@@ -610,45 +541,36 @@
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon blue">
-                        <i class="fas fa-chart-line"></i>
+                    <div class="stat-icon orange">
+                        <i class="fas fa-exclamation"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 id="riesgosMitigados">0</h3>
-                        <p>Mitigados</p>
+                        <h3 id="riesgosMedios">0</h3>
+                        <p>Riesgos Medios</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon green">
-                        <i class="fas fa-shield-alt"></i>
+                        <i class="fas fa-check"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 id="indiceResiliencia">0%</h3>
-                        <p>Índice Resiliencia</p>
+                        <h3 id="riesgosBajos">0</h3>
+                        <p>Riesgos Bajos</p>
                     </div>
                 </div>
-            </div>
-
-            <div class="phase-grid">
-                <div class="phase-card">
-                    <h3><i class="fas fa-table"></i> Matriz de Riesgos</h3>
-                    <canvas id="chartMatrizRiesgos"></canvas>
-                </div>
-                <div class="phase-card">
-                    <h3><i class="fas fa-chart-pie"></i> Distribución por Categoría</h3>
-                    <canvas id="chartCategoriasRiesgo"></canvas>
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fas fa-shield"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="controles">0</h3>
+                        <p>Controles Activos</p>
+                    </div>
                 </div>
             </div>
 
             <div class="table-container">
                 <h3><i class="fas fa-list"></i> Registro de Riesgos</h3>
-                <div class="filters">
-                    <button class="filter-btn-risk active" data-filter="all">Todos</button>
-                    <button class="filter-btn-risk" data-filter="Crítico">Críticos</button>
-                    <button class="filter-btn-risk" data-filter="Alto">Altos</button>
-                    <button class="filter-btn-risk" data-filter="Medio">Medios</button>
-                    <button class="filter-btn-risk" data-filter="Bajo">Bajos</button>
-                </div>
                 <table class="data-table">
                     <thead>
                         <tr>
@@ -658,7 +580,6 @@
                             <th>Impacto</th>
                             <th>Probabilidad</th>
                             <th>Nivel</th>
-                            <th>Estado</th>
                         </tr>
                     </thead>
                     <tbody id="tablaRiesgos"></tbody>
@@ -669,7 +590,7 @@
         <!-- SEGURIDAD -->
         <section id="seguridad" class="content-section">
             <h2 class="section-title">
-                <i class="fas fa-shield-alt"></i> Gestión de Seguridad de la Información
+                <i class="fas fa-shield-alt"></i> Panel de Seguridad (ISO 27001)
             </h2>
 
             <div class="stats-grid">
@@ -678,205 +599,159 @@
                         <i class="fas fa-lock"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 id="controlesActivos">0</h3>
-                        <p>Controles Activos</p>
+                        <h3 id="cumplimientoPoliticas">0%</h3>
+                        <p>Cumplimiento Políticas</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon green">
-                        <i class="fas fa-check-circle"></i>
+                        <i class="fas fa-user-shield"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 id="cumplimientoISO">0%</h3>
-                        <p>Cumplimiento ISO 27001</p>
+                        <h3 id="controlesAcceso">0</h3>
+                        <p>Controles de Acceso</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon orange">
-                        <i class="fas fa-bug"></i>
+                        <i class="fas fa-clipboard-check"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 id="vulnerabilidades">0</h3>
-                        <p>Vulnerabilidades</p>
+                        <h3 id="auditorias">0</h3>
+                        <p>Auditorías Realizadas</p>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon red">
-                        <i class="fas fa-fire"></i>
+                    <div class="stat-icon purple">
+                        <i class="fas fa-bell"></i>
                     </div>
                     <div class="stat-content">
                         <h3 id="incidentesSeguridad">0</h3>
-                        <p>Incidentes del Mes</p>
+                        <p>Incidentes Seguridad</p>
                     </div>
                 </div>
             </div>
 
             <div class="phase-grid">
                 <div class="phase-card">
-                    <h3><i class="fas fa-chart-bar"></i> Análisis de Vulnerabilidades</h3>
-                    <canvas id="chartVulnerabilidades"></canvas>
-                </div>
-                <div class="phase-card">
-                    <h3><i class="fas fa-shield-alt"></i> Estado de Controles</h3>
+                    <h3><i class="fas fa-chart-pie"></i> Estado de Controles</h3>
                     <canvas id="chartControles"></canvas>
                 </div>
                 <div class="phase-card">
-                    <h3><i class="fas fa-history"></i> Incidentes de Seguridad</h3>
-                    <canvas id="chartIncidentesSeguridad"></canvas>
-                </div>
-                <div class="phase-card">
-                    <h3><i class="fas fa-certificate"></i> Cumplimiento Normativo</h3>
-                    <canvas id="chartCumplimientoNormativo"></canvas>
+                    <h3><i class="fas fa-server"></i> Disponibilidad del Servicio</h3>
+                    <canvas id="chartDisponibilidad"></canvas>
+                    <div class="uptime-info">
+                        <div class="uptime-item">
+                            <span>Uptime:</span>
+                            <strong id="uptime">0%</strong>
+                        </div>
+                        <div class="uptime-item">
+                            <span>Downtime:</span>
+                            <strong id="downtime">0h</strong>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="table-container">
-                <h3><i class="fas fa-list-alt"></i> Registro de Auditorías de Seguridad</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID Auditoría</th>
-                            <th>Tipo</th>
-                            <th>Área</th>
-                            <th>Resultado</th>
-                            <th>Hallazgos</th>
-                            <th>Fecha</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablaSeguridad"></tbody>
-                </table>
-            </div>
+            <div class="security-alerts" id="securityAlerts"></div>
         </section>
 
         <!-- CENTRO DE CONTROL -->
         <section id="control" class="content-section">
             <h2 class="section-title">
-                <i class="fas fa-sliders-h"></i> Centro de Control y Monitoreo
+                <i class="fas fa-sliders-h"></i> Centro de Control
             </h2>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon blue">
-                        <i class="fas fa-server"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="servidoresActivos">0</h3>
-                        <p>Servidores Activos</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon green">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="serviciosOperativos">0%</h3>
-                        <p>Servicios Operativos</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon orange">
-                        <i class="fas fa-microchip"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="usoCPU">0%</h3>
-                        <p>Uso de CPU</p>
+            <div class="control-panel">
+                <div class="control-card">
+                    <h3><i class="fas fa-power-off"></i> Control de Simulación</h3>
+                    <button id="btnToggleSimulation" class="btn-control active">
+                        <i class="fas fa-pause"></i> Pausar Simulación
+                    </button>
+                    <div class="control-info">
+                        <div class="info-item">
+                            <span>Estado:</span>
+                            <strong id="simulationStatus" class="status-active">Activa</strong>
+                        </div>
+                        <div class="info-item">
+                            <span>Tiempo Transcurrido:</span>
+                            <strong id="elapsedTime">0:00</strong>
+                        </div>
+                        <div class="info-item">
+                            <span>Actualizaciones:</span>
+                            <strong id="updateCount">0</strong>
+                        </div>
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon purple">
-                        <i class="fas fa-memory"></i>
+
+                <div class="control-card">
+                    <h3><i class="fas fa-crystal-ball"></i> Predicción de Rendimiento</h3>
+                    <div class="prediction-display">
+                        <div class="prediction-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="prediction-text">
+                            <h4>Proyección 7 días:</h4>
+                            <p id="predictionText">Calculando...</p>
+                        </div>
                     </div>
-                    <div class="stat-content">
-                        <h3 id="usoMemoria">0%</h3>
-                        <p>Uso de Memoria</p>
-                    </div>
+                    <canvas id="chartPrediccion"></canvas>
                 </div>
             </div>
 
-            <div class="monitoring-grid">
-                <div class="monitor-card">
-                    <h3><i class="fas fa-heartbeat"></i> Estado de Infraestructura</h3>
-                    <div class="server-status-grid">
-                        <div class="server-item">
-                            <i class="fas fa-server"></i>
-                            <span>Servidor Web 1</span>
-                            <div class="status-indicator online"></div>
-                        </div>
-                        <div class="server-item">
-                            <i class="fas fa-server"></i>
-                            <span>Servidor Web 2</span>
-                            <div class="status-indicator online"></div>
-                        </div>
-                        <div class="server-item">
-                            <i class="fas fa-database"></i>
-                            <span>Base de Datos Principal</span>
-                            <div class="status-indicator online"></div>
-                        </div>
-                        <div class="server-item">
-                            <i class="fas fa-database"></i>
-                            <span>Base de Datos Backup</span>
-                            <div class="status-indicator warning"></div>
-                        </div>
-                        <div class="server-item">
-                            <i class="fas fa-hdd"></i>
-                            <span>Almacenamiento NAS</span>
-                            <div class="status-indicator online"></div>
-                        </div>
-                        <div class="server-item">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>Firewall Principal</span>
-                            <div class="status-indicator online"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="monitor-card">
-                    <h3><i class="fas fa-chart-line"></i> Métricas en Tiempo Real</h3>
-                    <canvas id="chartMetricasControl"></canvas>
-                </div>
-            </div>
-
-            <div class="phase-grid">
-                <div class="phase-card">
-                    <h3><i class="fas fa-chart-area"></i> Uso de Recursos</h3>
-                    <canvas id="chartRecursos"></canvas>
-                </div>
-                <div class="phase-card">
-                    <h3><i class="fas fa-network-wired"></i> Tráfico de Red</h3>
-                    <canvas id="chartTrafico"></canvas>
-                </div>
-                <div class="phase-card">
-                    <h3><i class="fas fa-thermometer-half"></i> Temperatura de Servidores</h3>
-                    <canvas id="chartTemperatura"></canvas>
-                </div>
-                <div class="phase-card">
-                    <h3><i class="fas fa-bolt"></i> Consumo Energético</h3>
-                    <canvas id="chartEnergia"></canvas>
-                </div>
-            </div>
-
-            <div class="table-container">
-                <h3><i class="fas fa-bell"></i> Alertas y Eventos Recientes</h3>
+            <div class="users-panel">
+                <h3><i class="fas fa-users"></i> Usuarios y Roles</h3>
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Timestamp</th>
-                            <th>Tipo</th>
-                            <th>Origen</th>
-                            <th>Mensaje</th>
-                            <th>Severidad</th>
+                            <th>Usuario</th>
+                            <th>Rol</th>
+                            <th>Área</th>
                             <th>Estado</th>
                         </tr>
                     </thead>
-                    <tbody id="tablaAlertas"></tbody>
+                    <tbody id="tablaUsuarios"></tbody>
                 </table>
+            </div>
+
+            <div class="logs-panel">
+                <h3><i class="fas fa-terminal"></i> Registro de Eventos del Sistema</h3>
+                <div class="logs-container" id="logsContainer"></div>
+            </div>
+
+            <div class="learning-panel">
+                <h3><i class="fas fa-graduation-cap"></i> Panel de Aprendizaje</h3>
+                <div class="learning-grid">
+                    <div class="learning-card">
+                        <i class="fas fa-book"></i>
+                        <h4>ITIL v4</h4>
+                        <p>Framework de gestión de servicios TI enfocado en la creación de valor y mejora continua.</p>
+                    </div>
+                    <div class="learning-card">
+                        <i class="fas fa-certificate"></i>
+                        <h4>ISO 20000</h4>
+                        <p>Estándar internacional para sistemas de gestión de servicios TI.</p>
+                    </div>
+                    <div class="learning-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h4>ISO 27001</h4>
+                        <p>Norma para sistemas de gestión de seguridad de la información.</p>
+                    </div>
+                    <div class="learning-card">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h4>ISO 31000</h4>
+                        <p>Gestión de riesgos - Directrices y principios.</p>
+                    </div>
+                </div>
             </div>
         </section>
 
     </main>
 
+    <!-- Notificación flotante -->
     <div id="notification" class="notification"></div>
 
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="script.js"></script>
 </body>
